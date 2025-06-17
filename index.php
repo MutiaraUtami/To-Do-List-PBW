@@ -1,5 +1,5 @@
-
-<?php include '../component/nav.php'; ?>
+<?php include './protect/proteksi.php'; ?>
+<?php include './component/nav.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,7 +66,6 @@
 		</div>
 	</div>
 </div>
-<!-- End popup dialog box -->
 
 </body>
 <script>
