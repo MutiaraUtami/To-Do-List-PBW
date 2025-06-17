@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    $password = $_POST['password'];
 
    $stmt = $conn->prepare("INSERT INTO user (nama, telepon, email, username, password) VALUES (?,?,?,?,?)");
-   $stmt->bind_param("sisss", $nama, $katasandi, $email, $username, $password);
+   $stmt->bind_param("sisss", $nama, $telepon, $email, $username, $password);
 
    
    if ($stmt->execute()) {
