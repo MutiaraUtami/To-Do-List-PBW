@@ -39,22 +39,38 @@
 					<div class="row">
 						<div class="col-sm-12">  
 							<div class="form-group">
-							  <label for="event_name">Event name</label>
-							  <input type="text" name="event_name" id="event_name" class="form-control" placeholder="Enter your event name">
+							<label for="title">Task Title</label>
+							<input type="text" name="title" id="title" class="form-control" placeholder="Enter task title">
 							</div>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-6">  
 							<div class="form-group">
-							  <label for="event_start_date">Event start</label>
-							  <input type="date" name="event_start_date" id="event_start_date" class="form-control onlydatepicker" placeholder="Event start date">
-							 </div>
+							<label for="deadline">Deadline</label>
+							<input type="datetime-local" name="deadline" id="deadline" class="form-control">
+							</div>
 						</div>
 						<div class="col-sm-6">  
 							<div class="form-group">
-							  <label for="event_end_date">Event end</label>
-							  <input type="date" name="event_end_date" id="event_end_date" class="form-control" placeholder="Event end date">
+							<label for="reminder">Reminder</label>
+							<input type="datetime-local" name="reminder" id="reminder" class="form-control">
+							</div>
+						</div>
+						<div class="col-sm-6">  
+							<div class="form-group">
+							<label for="priority">Priority</label>
+							<select name="priority" id="priority" class="form-control">
+							<option value="high">High</option>
+							<option value="medium" selected>Medium</option>
+							<option value="low">Low</option>
+							</select>
+							</div>
+						</div>
+						<div class="col-sm-6">  
+							<div class="form-group">
+							<label for="category">Category</label>
+							<input type="text" name="category" id="category" class="form-control">
 							</div>
 						</div>
 					</div>
@@ -75,82 +91,82 @@ $(document).ready(function() {
 
 function display_events() {
 	var events = new Array();
-$.ajax({
-    url: 'display_event.php',  
-    dataType: 'json',
-    success: function (response) {
-         
-    var result=response.data;
+	$.ajax({
+  url: 'tasks/display_task.php', // Ganti file
+  dataType: 'json',
+  success: function (response) {
+    var result = response.data;
     $.each(result, function (i, item) {
-    	events.push({
-            event_id: result[i].event_id,
-            title: result[i].title,
-            start: result[i].start,
-            end: result[i].end,
-            color: result[i].color,
-            url: result[i].url
-        }); 	
-    })
-	var calendar = $('#calendar').fullCalendar({
-	    defaultView: 'month',
-		 timeZone: 'local',
-	    editable: true,
-        selectable: true,
-		selectHelper: true,
-        select: function(start, end) {
-				//alert(start);
-				//alert(end);
-				$('#event_start_date').val(moment(start).format('YYYY-MM-DD'));
-				$('#event_end_date').val(moment(end).format('YYYY-MM-DD'));
-				$('#event_entry_modal').modal('show');
-			},
-        events: events,
-	    eventRender: function(event, element, view) { 
-            element.bind('click', function() {
-					alert(event.event_id);
-				});
-    	}
-		}); //end fullCalendar block	
-	  },//end success block
-	  error: function (xhr, status) {
-	  alert(response.msg);
-	  }
-	});//end ajax block	
+      events.push({
+        event_id: item.event_id,
+        title: item.title,
+        start: item.start, // deadline
+        end: item.end,     // bisa samakan dengan start
+        color: item.color,
+        url: item.url
+      });
+    });
+
+    $('#calendar').fullCalendar({
+      defaultView: 'month',
+      timeZone: 'local',
+      events: events,
+      select: function (start, end) {
+        $('#deadline').val(moment(start).format('YYYY-MM-DDTHH:mm'));
+        $('#reminder').val(moment(start).subtract(1, 'hours').format('YYYY-MM-DDTHH:mm')); // contoh default reminder
+        $('#event_entry_modal').modal('show');
+      },
+      eventRender: function (event, element) {
+        element.bind('click', function () {
+          alert("Task ID: " + event.event_id);
+        });
+      }
+    });
+  }
+});
+
 }
 
-function save_event()
-{
-var event_name=$("#event_name").val();
-var event_start_date=$("#event_start_date").val();
-var event_end_date=$("#event_end_date").val();
-if(event_name=="" || event_start_date=="" || event_end_date=="")
-{
-alert("Please enter all required details.");
-return false;
-}
-$.ajax({
- url:"save_event.php",
- type:"POST",
- dataType: 'json',
- data: {event_name:event_name,event_start_date:event_start_date,event_end_date:event_end_date},
- success:function(response){
-   $('#event_entry_modal').modal('hide');  
-   if(response.status == true)
-   {
-	alert(response.msg);
-	location.reload();
-   }
-   else
-   {
-	 alert(response.msg);
-   }
-  },
-  error: function (xhr, status) {
-  console.log('ajax error = ' + xhr.statusText);
-  alert(response.msg);
+function save_event() {
+  var title = $("#title").val();
+  var deadline = $("#deadline").val();
+  var reminder = $("#reminder").val();
+  var priority = $("#priority").val();
+  var category = $("#category").val();
+
+  if (title == "" || deadline == "") {
+    alert("Please enter required fields (title and deadline).");
+    return false;
   }
-});    
-return false;
+
+  $.ajax({
+    url: "tasks/save_task.php", // Ganti file PHP tujuan
+    type: "POST",
+    dataType: "json",
+    data: {
+      title: title,
+      deadline: deadline,
+      reminder: reminder,
+      priority: priority,
+      category: category,
+      // bisa tambahkan user_id jika belum pakai session
+    },
+    success: function (response) {
+      $('#event_entry_modal').modal('hide');
+      if (response.status == true) {
+        alert(response.msg);
+        location.reload();
+      } else {
+        alert(response.msg);
+      }
+    },
+    error: function (xhr, status) {
+      console.log('ajax error = ' + xhr.statusText);
+    }
+  });
+
+  return false;
 }
+
 </script>
 </html> 

@@ -16,20 +16,6 @@
     <?php endif; ?>
 
     <form method="post" action="proses_register.php">
-        <div class="mb-3">
-            <label for="nama" class="form-label">Nama</label>
-            <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan nama lengkap" required autocomplete="name">
-        </div>
-
-        <div class="mb-3">
-            <label for="telepon" class="form-label">No. Telepon</label>
-            <input type="text" id="telepon" name="telepon" class="form-control" placeholder="08xxxxxxxxxx" required autocomplete="tel">
-        </div>
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control" placeholder="contoh@email.com" required autocomplete="email">
-        </div>
 
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
@@ -39,6 +25,16 @@
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" id="password" name="password" class="form-control" placeholder="Minimal 6 karakter" required autocomplete="new-password">
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="contoh@email.com" required autocomplete="email">
+        </div>
+
+        <div class="mb-3">
+            <label for="phone" class="form-label">No. Telepon</label>
+            <input type="text" id="phone" name="phone" class="form-control" placeholder="08xxxxxxxxxx" required autocomplete="tel">
         </div>
 
         <button type="submit" class="btn btn-primary w-100">Daftar</button>
