@@ -10,13 +10,16 @@
       <div class="col">
         <ul class="navbar-nav flex-row align-items-center">
           <li class="nav-item mx-3">
-            <a class="nav-link" href="/index.php">Daftar Tugas</a>
+            <a class="nav-link" href="/index.php?id=<?php echo $_SESSION['id']; ?>">Kalender Tugas</a>
           </li>
           <li class="nav-item mx-3">
           <a class="nav-link" href="/profile/profile.php?id=<?php echo $_SESSION['id']; ?>">Profil Saya</a>
           </li>
           <li class="nav-item mx-3">
-            <a class="nav-link" href="/tasks/tugas_hari_ini.php">Tugas Hari Ini</a>
+            <a class="nav-link" href="/tasks/add_task.php">Tambah Tugas</a>
+          </li>
+          <li class="nav-item mx-3">
+            <a class="nav-link" href="/list/list_tasks.php?id=<?php echo $_SESSION['id']; ?>">Daftar Tugas</a>
           </li>
         </ul>
       </div>
