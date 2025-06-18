@@ -1,5 +1,6 @@
 
-<?php include '../component/nav.php'; ?>
+<?php include './component/nav.php'; ?>
+<?php include './protect/proteksi.php';?>
 <!DOCTYPE html>
 <html>
 <head>
