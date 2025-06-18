@@ -41,9 +41,9 @@ include '../koneksi/database_connection.php';
       <div class="mb-3">
         <label class="form-label">Prioritas</label>
         <select name="priority" class="form-control">
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
+          <option value="low">Low 🟢 </option>
+          <option value="medium">Medium 🟡 </option>
+          <option value="high">High 🔴 </option>
         </select>
       </div>
 

@@ -61,6 +61,18 @@ include '../component/nav.php';
   <td><?= htmlspecialchars($row['category']) ?></td>
   <td><?= htmlspecialchars($row['deadline']) ?></td>
   <td>
+  <?php
+    if ($task['priority'] == 'tinggi') echo "<span style='color:red;'>Tinggi</span>";
+    elseif ($task['priority'] == 'rendah') echo "<span style='color:green;'>Rendah</span>";
+    else echo "<span style='color:orange;'>Sedang</span>";
+    ?>
+  </td>
+  <form action="tunda_task.php" method="post" style="display:inline;">
+    <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
+    <button type="submit">Tunda +2 Jam</button>
+  </form>
+
+  <td>
     <form action="proses_update_status.php" method="post" class="d-inline">
       <input type="hidden" name="id" value="<?= $row['id'] ?>">
       <select name="status" onchange="this.form.submit()" class="form-select form-select-sm">
@@ -75,9 +87,6 @@ include '../component/nav.php';
     <a href="./tasks/proses_hapus_task.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus tugas ini?')">Hapus</a>
   </td>
 </tr>
-
-
-
                    <?php endwhile; ?>
                <?php else: ?>
                    <tr>

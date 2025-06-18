@@ -17,6 +17,6 @@ if (isset($_POST['id'], $_POST['status'])) {
     }
 }
 
-header('Location: list_tasks.php?id=<?php echo $_SESSION['user_id']; ?');
+header('Location: list_tasks.php?id=' . $_SESSION['user_id']);
 exit;
 ?>
