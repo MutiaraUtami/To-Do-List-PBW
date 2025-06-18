@@ -1,39 +1,32 @@
 <?php                
 require '..\koneksi\database_connection.php'; 
 
-$display_query = "SELECT id, title, deadline, status FROM tasks";             
-$results = mysqli_query($con, $display_query);   
-$count = mysqli_num_rows($results);  
+// Ambil data dari form (pastikan field ini dikirim via POST)
+$title = $_POST['title'];
+$deadline = date("Y-m-d H:i:s", strtotime($_POST['deadline']));
+$reminder = date("Y-m-d H:i:s", strtotime($_POST['reminder']));
+$status = $_POST['status']; 
+$priority = $_POST['priority']; 
+$category = $_POST['category'];
+$user_id = $_POST['user_id']; 
 
-if ($count > 0) {
-    $data_arr = array();
-    $i = 0;
+$insert_query = "INSERT INTO tasks 
+    (user_id, title, deadline, reminder, status, priority, category) 
+    VALUES 
+    ('$user_id', '$title', '$deadline', '$reminder', '$status', '$priority', '$category')";
 
-    while ($data_row = mysqli_fetch_array($results, MYSQLI_ASSOC)) {    
-        $data_arr[$i]['event_id'] = $data_row['id'];
-        $data_arr[$i]['title'] = $data_row['title'];
-        $data_arr[$i]['start'] = date("Y-m-d", strtotime($data_row['deadline']));
-        $data_arr[$i]['end'] = date("Y-m-d", strtotime($data_row['deadline'])); // end = same as start
-        $data_arr[$i]['color'] = match($data_row['status']) {
-            'done' => '#28a745',       // green
-            'delayed' => '#dc3545',    // red
-            default => '#ffc107',      // yellow for pending
-        };
-        $data_arr[$i]['url'] = '#'; // opsional, bisa arahkan ke detail task jika ada halaman detail
-        $i++;
-    }
-
+if (mysqli_query($con, $insert_query)) {
     $data = array(
         'status' => true,
-        'msg' => 'Successfully retrieved tasks!',
-        'data' => $data_arr
+        'msg' => 'Task added successfully!'
     );
 } else {
     $data = array(
         'status' => false,
-        'msg' => 'No tasks found!'
+        'msg' => 'Sorry, task not added.',
+        'error' => mysqli_error($con) // untuk debugging
     );
 }
 
-echo json_encode($data);
+echo json_encode($data);	
 ?>

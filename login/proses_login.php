@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $result->fetch_assoc();
 
         // Verifikasi password
-        if (password_verify($password_input, $user['password'])) {
+        if (password_verify($password_input, $user['password'])) 
             $_SESSION['id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['login_todolist'] = true;
@@ -34,5 +34,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     $stmt->close();
-}
 ?>
