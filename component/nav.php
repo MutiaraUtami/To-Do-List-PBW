@@ -19,7 +19,7 @@
             <a class="nav-link" href="/tasks/add_task.php">Tambah Tugas</a>
           </li>
           <li class="nav-item mx-3">
-            <a class="nav-link" href="/list/list_tasks.php?id=<?php echo $_SESSION['id']; ?>">Daftar Tugas</a>
+            <a class="nav-link" href="/list/list_tasks.php?id=<?php echo $_SESSION['user_id']; ?>">Daftar Tugas</a>
           </li>
         </ul>
       </div>

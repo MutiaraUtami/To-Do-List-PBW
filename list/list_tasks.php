@@ -2,16 +2,15 @@
 include '../protect/proteksi.php';
 include '../koneksi/database_connection.php';
 
-// Ambil kategori dari URL (jika ada)
 $kategori = $_GET['kategori'] ?? '';
+$userId = $_SESSION['id']; // Gunakan session yang pasti ada
 
-// Ambil data tugas sesuai user yang login
 if ($kategori) {
     $stmt = $conn->prepare("SELECT * FROM tasks WHERE category = ? AND user_id = ?");
-    $stmt->bind_param("si", $kategori, $_SESSION['user_id']);
+    $stmt->bind_param("si", $kategori, $userId);
 } else {
     $stmt = $conn->prepare("SELECT * FROM tasks WHERE user_id = ?");
-    $stmt->bind_param("i", $_SESSION['id']);
+    $stmt->bind_param("i", $userId);
 }
 $stmt->execute();
 $result = $stmt->get_result();
@@ -54,46 +53,47 @@ include '../component/nav.php';
                </tr>
            </thead>
            <tbody>
-               <?php if ($result->num_rows > 0): ?>
-                   <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
-  <td><?= htmlspecialchars($row['title']) ?></td>
-  <td><?= htmlspecialchars($row['category']) ?></td>
-  <td><?= htmlspecialchars($row['deadline']) ?></td>
-  <td>
-  <?php
-    if ($task['priority'] == 'tinggi') echo "<span style='color:red;'>Tinggi</span>";
-    elseif ($task['priority'] == 'rendah') echo "<span style='color:green;'>Rendah</span>";
-    else echo "<span style='color:orange;'>Sedang</span>";
-    ?>
-  </td>
-  <form action="tunda_task.php" method="post" style="display:inline;">
-    <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
-    <button type="submit">Tunda +2 Jam</button>
-  </form>
-
-  <td>
-    <form action="proses_update_status.php" method="post" class="d-inline">
-      <input type="hidden" name="id" value="<?= $row['id'] ?>">
-      <select name="status" onchange="this.form.submit()" class="form-select form-select-sm">
-        <option value="pending" <?= $row['status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
-        <option value="done" <?= $row['status'] === 'done' ? 'selected' : '' ?>>Done</option>
-        <option value="delayed" <?= $row['status'] === 'delayed' ? 'selected' : '' ?>>Delayed</option>
-      </select>
-    </form>
-  </td>
-  <td>
-    <a href="./tasks/form_edit_task.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-    <a href="./tasks/proses_hapus_task.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus tugas ini?')">Hapus</a>
-  </td>
-</tr>
-                   <?php endwhile; ?>
-               <?php else: ?>
-                   <tr>
-                       <td colspan="4" class="text-center text-muted">Tidak ada tugas untuk kategori ini.</td>
-                   </tr>
-               <?php endif; ?>
-           </tbody>
+<?php if ($result->num_rows > 0): ?>
+    <?php while ($row = $result->fetch_assoc()): ?>
+    <tr>
+        <td><?= htmlspecialchars($row['title']) ?></td>
+        <td><?= htmlspecialchars($row['category']) ?></td>
+        <td><?= htmlspecialchars($row['deadline']) ?></td>
+        <td>
+            <?php
+            if ($row['priority'] == 'tinggi') echo "<span style='color:red;'>Tinggi</span>";
+            elseif ($row['priority'] == 'rendah') echo "<span style='color:green;'>Rendah</span>";
+            else echo "<span style='color:orange;'>Sedang</span>";
+            ?>
+        </td>
+        <td>
+            <form action="tunda_task.php" method="post" style="display:inline;">
+                <input type="hidden" name="task_id" value="<?= $row['id'] ?>">
+                <button type="submit">Tunda +2 Jam</button>
+            </form>
+        </td>
+        <td>
+            <form action="proses_update_status.php" method="post" class="d-inline">
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                <select name="status" onchange="this.form.submit()" class="form-select form-select-sm">
+                    <option value="pending" <?= $row['status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
+                    <option value="done" <?= $row['status'] === 'done' ? 'selected' : '' ?>>Done</option>
+                    <option value="delayed" <?= $row['status'] === 'delayed' ? 'selected' : '' ?>>Delayed</option>
+                </select>
+            </form>
+        </td>
+        <td>
+            <a href="./tasks/form_edit_task.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+            <a href="./tasks/proses_hapus_task.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus tugas ini?')">Hapus</a>
+        </td>
+    </tr>
+    <?php endwhile; ?>
+<?php else: ?>
+    <tr>
+        <td colspan="4" class="text-center text-muted">Tidak ada tugas untuk kategori ini.</td>
+    </tr>
+<?php endif; ?>
+</tbody>
        </table>
    </div>
    <!-- Modal Edit Tugas -->
