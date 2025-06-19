@@ -24,12 +24,12 @@ include_once dirname(__DIR__) . '../config.php';
           <a class="nav-link text-light" href="<?= $BASE_URL ?>/tasks/weekly_schedule.php?id=<?= $_SESSION['id']; ?>">
             <i class="bi bi-calendar-event"></i> Jadwal
           </a>
-        </li>
+<!---        </li>
         <li class="nav-item mx-2">
           <a class="nav-link text-light" href="<?= $BASE_URL ?>/list/list_tasks.php?id=<?= $_SESSION['id']; ?>">
             <i class="bi bi-list-task"></i> Tugas
           </a>
-        </li>
+        </li>--->
       </ul>
 
     <form class="d-flex mx-auto cyber-search" action="<?= $BASE_URL ?>/search.php" method="GET" role="search">
