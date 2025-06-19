@@ -32,16 +32,16 @@ include_once dirname(__DIR__) . '../config.php';
         </li>
       </ul>
 
-      <form class="d-flex mx-auto cyber-search" action="<?= $BASE_URL ?>search.php" method="GET" role="search">
-        <input 
-          class="form-control me-2 cyber-input" 
-          type="search" 
-          name="query" 
-          placeholder="Cari tugas..." 
-          aria-label="Search"
-        >
-        <button class="btn btn-cyber-glow" type="submit">Cari</button>
-      </form>
+    <form class="d-flex mx-auto cyber-search" action="<?= $BASE_URL ?>/search.php" method="GET" role="search">
+      <input 
+        class="form-control me-2 cyber-input text-white" 
+        type="search" 
+        name="query" 
+        placeholder="Cari tugas..." 
+        aria-label="Search"
+      >
+      <button class="btn btn-cyber-glow" type="submit">Cari</button>
+    </form>
 
 
         <div class="d-flex align-items-center gap-2">
