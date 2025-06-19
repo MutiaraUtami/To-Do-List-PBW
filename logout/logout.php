@@ -1,9 +1,7 @@
 <?php
 session_start();
-session_unset();  // Hapus semua variabel sesi
-session_destroy(); // Hancurkan sesi
-
-// Redirect ke login dengan pesan
-header("Location: ../login/form_login.php?message=Anda telah berhasil logout");
+session_unset();
+session_destroy();
+header("Location: ../login/form_login.php?message=" . urlencode("Anda telah logout."));
 exit;
 ?>

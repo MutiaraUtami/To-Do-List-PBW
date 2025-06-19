@@ -1,195 +1,156 @@
-<<<<<<< HEAD
-
-<?php include './component/nav.php'; ?>
-<?php include './protect/proteksi.php';?>
-<!DOCTYPE html>
-<html>
-<head>
-<title>To Do List</title>
-<!-- *Note: You must have internet connection on your laptop or pc other wise below code is not working -->
-<!-- CSS for full calender -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" rel="stylesheet" />
-<!-- JS for jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<!-- JS for full calender -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
-<!-- bootstrap css and js -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-</head>
-<body>
-<div class="container">
-	<div class="row">
-		<div class="col-lg-12">
-			<div id="calendar"></div>
-		</div>
-	</div>
-</div>
-<!-- Start popup dialog box -->
-<div class="modal fade" id="event_entry_modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-md" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="modalLabel">Add New Event</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">�</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<div class="img-container">
-					<div class="row">
-						<div class="col-sm-12">  
-							<div class="form-group">
-							  <label for="event_name">Event name</label>
-							  <input type="text" name="event_name" id="event_name" class="form-control" placeholder="Enter your event name">
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">  
-							<div class="form-group">
-							  <label for="event_start_date">Event start</label>
-							  <input type="date" name="event_start_date" id="event_start_date" class="form-control onlydatepicker" placeholder="Event start date">
-							 </div>
-						</div>
-						<div class="col-sm-6">  
-							<div class="form-group">
-							  <label for="event_end_date">Event end</label>
-							  <input type="date" name="event_end_date" id="event_end_date" class="form-control" placeholder="Event end date">
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" onclick="save_event()">Save Event</button>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- End popup dialog box -->
-
-</body>
-<script>
-$(document).ready(function() {
-	display_events();
-}); //end document.ready block
-
-function display_events() {
-	var events = new Array();
-$.ajax({
-    url: 'display_event.php',  
-    dataType: 'json',
-    success: function (response) {
-         
-    var result=response.data;
-    $.each(result, function (i, item) {
-    	events.push({
-            event_id: result[i].event_id,
-            title: result[i].title,
-            start: result[i].start,
-            end: result[i].end,
-            color: result[i].color,
-            url: result[i].url
-        }); 	
-    })
-	var calendar = $('#calendar').fullCalendar({
-	    defaultView: 'month',
-		 timeZone: 'local',
-	    editable: true,
-        selectable: true,
-		selectHelper: true,
-        select: function(start, end) {
-				//alert(start);
-				//alert(end);
-				$('#event_start_date').val(moment(start).format('YYYY-MM-DD'));
-				$('#event_end_date').val(moment(end).format('YYYY-MM-DD'));
-				$('#event_entry_modal').modal('show');
-			},
-        events: events,
-	    eventRender: function(event, element, view) { 
-            element.bind('click', function() {
-					alert(event.event_id);
-				});
-    	}
-		}); //end fullCalendar block	
-	  },//end success block
-	  error: function (xhr, status) {
-	  alert(response.msg);
-	  }
-	});//end ajax block	
-}
-
-function save_event()
-{
-var event_name=$("#event_name").val();
-var event_start_date=$("#event_start_date").val();
-var event_end_date=$("#event_end_date").val();
-if(event_name=="" || event_start_date=="" || event_end_date=="")
-{
-alert("Please enter all required details.");
-return false;
-}
-$.ajax({
- url:"save_event.php",
- type:"POST",
- dataType: 'json',
- data: {event_name:event_name,event_start_date:event_start_date,event_end_date:event_end_date},
- success:function(response){
-   $('#event_entry_modal').modal('hide');  
-   if(response.status == true)
-   {
-	alert(response.msg);
-	location.reload();
-   }
-   else
-   {
-	 alert(response.msg);
-   }
-  },
-  error: function (xhr, status) {
-  console.log('ajax error = ' + xhr.statusText);
-  alert(response.msg);
-  }
-});    
-return false;
-}
-</script>
-</html> 
-=======
-<?php 
+<?php
+session_start();
 include './protect/proteksi.php';
 include './component/nav.php';
-include './koneksi/database_connection.php'; 
-?>
 
+require './koneksi/database_connection.php';
+$user_id = $_SESSION['id'];
+$result = $conn->prepare("SELECT * FROM tasks WHERE user_id = ? ORDER BY deadline ASC");
+$result->bind_param("i", $user_id);
+$result->execute();
+$tasks = $result->get_result();
+?>
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Kalender Tugas</title>
-  <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet' />
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js'></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Tugas Saya</title>
+
+  <!-- Bootstrap & Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="global.css" />
 </head>
-<body>
-  <div class="container mt-4 mb-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-4">Kalender Tugas</h2>
-    <a href="./tasks/add_task.php" class="btn btn-primary mb-3">Tambah Tugas</a>
-</div>
-  <div id='calendar'></div>
+<body class="bg-dark text-light">
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between mb-4 align-items-center">
+    <h2 class="text-neon">Tugas Saya</h2>
+    <button class="btn btn-cyber" data-bs-toggle="modal" data-bs-target="#modalAdd">
+      <i class="bi bi-plus-lg"></i> Tambah Tugas
+    </button>
   </div>
 
-  <script>
-    $(document).ready(function() {
-      $('#calendar').fullCalendar({
-        events: './tasks/load_tasks.php'
+<div class="row">
+  <?php foreach ($tasks as $task): ?>
+    <div class="col-md-6 col-lg-4">
+      <div class="task-card task-priority-<?= $task['priority']; ?>" data-task-id="<?= $task['id']; ?>">
+        <div class="d-flex justify-content-between">
+          <div>
+            <div class="task-card-title"><?= htmlspecialchars($task['title']); ?></div>
+            <div class="task-card-meta">Deadline: <?= date('d M Y, H:i', strtotime($task['deadline'])); ?></div>
+            <div class="task-card-meta">Kategori: <?= htmlspecialchars($task['category']); ?></div>
+            <div class="task-card-meta">Status: <?= ucfirst($task['status']); ?></div>
+          </div>
+          <div>
+            <button class="task-action-btn" onclick="openEditModal(<?= $task['id']; ?>)">
+              <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="task-action-btn" onclick="deleteTask(<?= $task['id']; ?>)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <?php endforeach; ?>
+</div>
+
+</div>
+
+<!-- Modal: Tambah & Edit tugas -->
+<div class="modal fade" id="modalForm" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content bg-dark text-light glass-card">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="modalTitle">Tambah/Edit Tugas</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="formTask">
+      <div class="modal-body">
+          <input type="hidden" id="task_id" name="id">
+          <div class="mb-3">
+            <label for="task_title" class="form-label">Judul</label>
+            <input type="text" class="form-control bg-dark text-light border-info" id="task_title" name="title" required>
+          </div>
+          <div class="mb-3">
+            <label for="task_deadline" class="form-label">Deadline</label>
+            <input type="datetime-local" class="form-control bg-dark text-light border-info" id="task_deadline" name="deadline" required>
+          </div>
+          <div class="mb-3">
+            <label for="task_priority" class="form-label">Prioritas</label>
+            <select class="form-select bg-dark text-light border-info" id="task_priority" name="priority">
+              <option value="high">Tinggi</option>
+              <option value="medium">Sedang</option>
+              <option value="low">Rendah</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="task_category" class="form-label">Kategori</label>
+            <select class="form-select bg-dark text-light border-info" id="task_category" name="category">
+              <option value="kerja">Kerja</option>
+              <option value="kuliah">Kuliah</option>
+              <option value="pribadi">Pribadi</option>
+            </select>
+          </div>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-danger me-auto" id="btnDelete">Hapus</button>
+        <button type="submit" class="btn btn-cyber" id="btnSave">Simpan</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const modal = new bootstrap.Modal(document.getElementById('modalForm'));
+  const form = document.getElementById('formTask');
+  const deleteBtn = document.getElementById('btnDelete');
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const data = new FormData(form);
+    fetch('/tasks/save_task.php', { method:'POST', body:data })
+      .then(r => r.json()).then(resp => location.reload());
+  });
+
+  deleteBtn.addEventListener('click', () => {
+    if (confirm('Yakin ingin menghapus tugas ini?')) {
+      const id = form.task_id.value;
+      fetch('/tasks/delete_task.php', {
+        method:'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        body: 'id='+id
+      }).then(r => r.json()).then(resp => location.reload());
+    }
+  });
+
+  document.querySelectorAll('.task-card').forEach(card => {
+    card.addEventListener('click',() => {
+      modal.show();
+      document.getElementById('modalTitle').textContent = 'Edit Tugas';
+      document.getElementById('btnDelete').style.display = 'inline-block';
+      document.getElementById('btnSave').textContent = 'Update';
+      ['id','title','deadline','priority','category'].forEach(f => {
+        const el = document.getElementById('task_'+f);
+        el.value = card.dataset[f];
       });
     });
-  </script>
+  });
+
+  document.querySelector('button[data-bs-target="#modalAdd"]').addEventListener('click', () => {
+    form.reset();
+    document.getElementById('modalTitle').textContent = 'Tambah Tugas';
+    deleteBtn.style.display = 'none';
+    document.getElementById('task_id').value = '';
+    document.getElementById('btnSave').textContent = 'Tambah';
+  });
+});
+</script>
 </body>
 </html>
->>>>>>> 02e9e860b4da398eb0dcaff71bdba5a6cde4774d

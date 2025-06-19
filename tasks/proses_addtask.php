@@ -1,7 +1,6 @@
 <?php
 include '../koneksi/database_connection.php';
 
-// Ganti dengan ID user yang sedang login (sementara hardcoded)
 $id = $_GET['id'] ?? 0;
 
 $title = $_POST['title'];
