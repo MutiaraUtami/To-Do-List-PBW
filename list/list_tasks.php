@@ -73,7 +73,7 @@ $result = $stmt->get_result();
                   </select>
                 </form>
               </p>
-              <form action="/tasks/tunda_task.php" method="post" class="d-inline">
+              <form action="./tasks/tunda_task.php" method="post" class="d-inline">
                 <input type="hidden" name="task_id" value="<?= $task['id'] ?>">
                 <button class="btn btn-outline-warning btn-sm mt-2">Tunda +2 Jam</button>
               </form>
@@ -89,7 +89,7 @@ $result = $stmt->get_result();
                 data-deadline="<?= date('Y-m-d', strtotime($task['deadline'])) ?>"
               >Edit</button>
 
-              <a href="/tasks/proses_hapus_task.php?id=<?= $task['id'] ?>"
+              <a href="./tasks/proses_hapus_task.php?id=<?= $task['id'] ?>"
                 onclick="return confirm('Yakin ingin menghapus tugas ini?')"
                 class="btn btn-sm btn-outline-danger">Hapus</a>
             </div>

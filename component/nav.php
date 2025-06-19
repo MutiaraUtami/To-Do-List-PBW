@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include_once dirname(__DIR__) . '/config.php';
+include_once dirname(__DIR__) . '../config.php';
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm border-bottom border-secondary">
@@ -21,13 +21,8 @@ include_once dirname(__DIR__) . '/config.php';
     <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item mx-2">
-          <a class="nav-link text-light" href="<?= $BASE_URL ?>/index.php?id=<?= $_SESSION['id']; ?>">
-            <i class="bi bi-calendar-event"></i> Kalender
-          </a>
-        </li>
-        <li class="nav-item mx-2">
-          <a class="nav-link text-light" href="<?= $BASE_URL ?>/tasks/add_task.php">
-            <i class="bi bi-plus-circle"></i> Tambah
+          <a class="nav-link text-light" href="<?= $BASE_URL ?>/tasks/weekly_schedule.php?id=<?= $_SESSION['id']; ?>">
+            <i class="bi bi-calendar-event"></i> Jadwal
           </a>
         </li>
         <li class="nav-item mx-2">
